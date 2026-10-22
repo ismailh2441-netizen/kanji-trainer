@@ -1,0 +1,50 @@
+@import "tailwindcss";
+
+@theme {
+  --font-sans: "Noto Sans JP", system-ui, "Segoe UI", Roboto, sans-serif;
+  --font-jp: "Noto Sans JP", "Yu Gothic", "Meiryo", sans-serif;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  margin: 0;
+  min-height: 100svh;
+  background: #f7f7fb;
+  color: #27233a;
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.font-jp {
+  font-family: var(--font-jp);
+}
+
+/* Stroke-order writing motion (paths use pathLength=1, so 1 == full stroke) */
+@keyframes kanji-stroke-draw {
+  from {
+    stroke-dashoffset: 1;
+  }
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+@keyframes kanji-marker-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .kanji-stroke-anim,
+  .kanji-marker-anim {
+    animation: none !important;
+  }
+}
