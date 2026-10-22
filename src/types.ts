@@ -28,6 +28,8 @@ export interface Card {
   lapses: number
   /** Review interval (days) to restore after finishing relearning. */
   nextIvl?: number
+  /** Local-modified time (ms), used to merge progress across devices. */
+  updatedAt?: number
 }
 
 /** 1 = Again, 2 = Hard, 3 = Good, 4 = Easy */
@@ -36,6 +38,8 @@ export type Grade = 1 | 2 | 3 | 4
 export interface LevelProgress {
   cards: Record<string, Card>
   newToday: { date: string; count: number }
+  /** Time (ms) of the last level reset, used to discard stale cards on merge. */
+  resetAt?: number
 }
 
 export interface Progress {
@@ -43,4 +47,6 @@ export interface Progress {
   levels: Record<Level, LevelProgress>
   settings: { newPerDay: number }
   streak: { last: string; count: number }
+  /** Local-modified time (ms), used to resolve settings/streak conflicts. */
+  updatedAt?: number
 }

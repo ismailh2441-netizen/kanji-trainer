@@ -1,6 +1,26 @@
 import { NavLink, Outlet, Link } from 'react-router-dom'
+import { useAuth } from '../lib/auth'
+import { useSyncStatus } from '../lib/sync'
 
 export default function Layout() {
+  const { user } = useAuth()
+  const sync = useSyncStatus()
+
+  const syncLabel =
+    sync.state === 'error'
+      ? 'Sync issue'
+      : sync.state === 'saving'
+        ? 'Saving…'
+        : sync.state === 'syncing'
+          ? 'Syncing…'
+          : 'Synced'
+  const syncDot =
+    sync.state === 'error'
+      ? 'bg-rose-500'
+      : sync.state === 'saving' || sync.state === 'syncing'
+        ? 'bg-amber-400'
+        : 'bg-emerald-500'
+
   return (
     <div className="flex min-h-svh flex-col">
       <header className="sticky top-0 z-10 border-b border-slate-200 bg-white/85 backdrop-blur">
@@ -11,29 +31,39 @@ export default function Layout() {
             </span>
             Kanji Trainer
           </Link>
-          <nav className="flex items-center gap-1 text-sm">
-            <NavLink
-              to="/"
-              end
-              className={({ isActive }) =>
-                `rounded-lg px-3 py-1.5 font-medium transition ${
-                  isActive ? 'bg-slate-100 text-slate-900' : 'text-slate-600 hover:bg-slate-50'
-                }`
-              }
+          <div className="flex items-center gap-1.5">
+            <div
+              className="hidden items-center gap-1.5 rounded-lg px-2 py-1 text-xs text-slate-500 sm:flex"
+              title={sync.error ?? user?.email ?? syncLabel}
+              aria-live="polite"
             >
-              Levels
-            </NavLink>
-            <NavLink
-              to="/settings"
-              className={({ isActive }) =>
-                `rounded-lg px-3 py-1.5 font-medium transition ${
-                  isActive ? 'bg-slate-100 text-slate-900' : 'text-slate-600 hover:bg-slate-50'
-                }`
-              }
-            >
-              Settings
-            </NavLink>
-          </nav>
+              <span className={`size-2 rounded-full ${syncDot}`} aria-hidden="true" />
+              <span>{syncLabel}</span>
+            </div>
+            <nav className="flex items-center gap-1 text-sm">
+              <NavLink
+                to="/"
+                end
+                className={({ isActive }) =>
+                  `rounded-lg px-3 py-1.5 font-medium transition ${
+                    isActive ? 'bg-slate-100 text-slate-900' : 'text-slate-600 hover:bg-slate-50'
+                  }`
+                }
+              >
+                Levels
+              </NavLink>
+              <NavLink
+                to="/settings"
+                className={({ isActive }) =>
+                  `rounded-lg px-3 py-1.5 font-medium transition ${
+                    isActive ? 'bg-slate-100 text-slate-900' : 'text-slate-600 hover:bg-slate-50'
+                  }`
+                }
+              >
+                Settings
+              </NavLink>
+            </nav>
+          </div>
         </div>
       </header>
 

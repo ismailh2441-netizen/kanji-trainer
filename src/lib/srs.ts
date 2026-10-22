@@ -32,6 +32,7 @@ export function newCard(now: number): Card {
     due: now + LEARN_STEPS[0] * MIN_MS,
     reps: 0,
     lapses: 0,
+    updatedAt: now,
   }
 }
 
