@@ -2,6 +2,8 @@
 
 A web app for learning Japanese kanji by JLPT level, with spaced-repetition review, multiple-choice quizzes, stroke-order practice, and progress stored locally in the browser.
 
+**Live site:** <https://kanji-trainer-eight.vercel.app>
+
 ## Features
 
 - **JLPT decks** — N5 through N1, loaded on demand so the first page stays fast.
