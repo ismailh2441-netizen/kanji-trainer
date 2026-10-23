@@ -85,14 +85,46 @@ body {
   }
 }
 
-@keyframes slideInFromRightEdge {
+@keyframes glowPulse {
+  0%,
+  100% {
+    box-shadow: 0 0 0 0 rgba(99, 102, 241, 0.7);
+  }
+  50% {
+    box-shadow: 0 0 0 8px rgba(99, 102, 241, 0);
+  }
+}
+
+@keyframes countUp {
   from {
     opacity: 0;
-    transform: translateX(120%);
+    transform: translateY(8px) scale(0.9);
   }
   to {
     opacity: 1;
-    transform: translateX(0);
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes confettiFall {
+  0% {
+    transform: translateY(0) rotate(0deg);
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(60px) rotate(720deg);
+    opacity: 0;
+  }
+}
+
+@keyframes slideInScale {
+  from {
+    opacity: 0;
+    transform: scale(0.8) translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
   }
 }
 
@@ -127,14 +159,25 @@ body {
   }
 }
 
-@keyframes slideInRight {
+@keyframes slideInFromRightEdge {
   from {
     opacity: 0;
-    transform: translateX(20px);
+    transform: translateX(120%);
   }
   to {
     opacity: 1;
     transform: translateX(0);
+  }
+}
+
+@keyframes slideOutLeft {
+  from {
+    opacity: 1;
+    transform: translateX(0);
+  }
+  to {
+    opacity: 0;
+    transform: translateX(-100%);
   }
 }
 
@@ -172,16 +215,24 @@ body {
   animation: pulse 0.9s ease-in-out infinite;
 }
 
+.animate-glow-pulse {
+  animation: glowPulse 2s ease-in-out infinite;
+}
+
+.animate-count-up {
+  animation: countUp 0.4s ease-out;
+}
+
+.animate-confetti {
+  animation: confettiFall 1.2s ease-out forwards;
+}
+
 .animate-slide-in-right-edge {
   animation: slideInFromRightEdge 0.4s ease-out;
 }
 
 .animate-slide-out-left {
   animation: slideOutLeft 0.4s ease-in forwards;
-}
-
-.animate-bounce {
-  animation: bounce 0.52s ease-in-out;
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -192,6 +243,10 @@ body {
   .animate-shake,
   .animate-bounce,
   .animate-pulse,
+  .animate-glow-pulse,
+  .animate-count-up,
+  .animate-confetti,
+  .animate-slide-in-scale,
   .animate-slide-in-right-edge,
   .animate-slide-out-left,
   .animate-pop-in {

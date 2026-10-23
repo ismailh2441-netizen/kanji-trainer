@@ -228,13 +228,31 @@ export default function Review() {
     const total = tally[1] + tally[2] + tally[3] + tally[4]
     const perfect = tally[1] === 0
     return (
-      <div className="mx-auto max-w-xl rounded-2xl border border-slate-200 bg-white p-10 text-center shadow-sm animate-fade-in-scale">
+      <div className="mx-auto max-w-xl rounded-2xl border border-slate-200 bg-white p-10 text-center shadow-sm animate-slide-in-scale relative overflow-hidden">
+        {perfect && total > 0 && (
+          <div className="absolute inset-0 pointer-events-none">
+            {[...Array(12)].map((_, i) => (
+              <div
+                key={i}
+                className="absolute w-2 h-2 rounded-full animate-confetti"
+                style={{
+                  left: `${10 + i * 7}%`,
+                  top: '10%',
+                  backgroundColor: ['#6366f1', '#10b981', '#f59e0b', '#ef4444', '#ec4899'][i % 5],
+                  animationDelay: `${i * 80}ms`,
+                }}
+              />
+            ))}
+          </div>
+        )}
         <div className="mx-auto grid size-14 place-items-center rounded-full bg-emerald-100 text-2xl font-bold text-emerald-700 animate-pop-in">
           ✓
         </div>
-        <h2 className="mt-4 text-xl font-bold text-slate-900 animate-fade-in-up">Session complete</h2>
+        <h2 className="mt-4 text-xl font-bold text-slate-900 animate-fade-in-up">
+          {perfect && total > 0 ? 'Perfect Session! 🎉' : 'Session complete'}
+        </h2>
         <p className="mt-1 text-slate-500 animate-fade-in-up">
-          {total} card{total === 1 ? '' : 's'} reviewed{perfect && total > 0 ? ' · Perfect!' : ''}.
+          {total} card{total === 1 ? '' : 's'} reviewed{perfect && total > 0 ? ' · Flawless!' : ''}.
         </p>
         <div className="mt-5 flex justify-center gap-3 text-sm">
           {GRADE_BUTTONS.map((b, idx) => (

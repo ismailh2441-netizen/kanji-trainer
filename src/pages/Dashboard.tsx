@@ -83,17 +83,22 @@ export default function Dashboard() {
         <div className="flex flex-col justify-between rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
           <div>
             <div className="text-xs uppercase tracking-wide text-slate-500">Study streak</div>
-            <div className="mt-1 text-3xl font-bold text-slate-900">
-              {progress.streak.count}
-              <span className="ml-1 text-base font-medium text-slate-500">
+            <div className="mt-1 flex items-baseline gap-2">
+              <span key={progress.streak.count} className="text-3xl font-bold text-slate-900 animate-count-up">
+                {progress.streak.count}
+              </span>
+              <span className="text-base font-medium text-slate-500">
                 day{progress.streak.count === 1 ? '' : 's'}
               </span>
+              {progress.streak.count >= 3 && (
+                <span className="text-lg animate-bounce" title="Keep it up!">🔥</span>
+              )}
             </div>
           </div>
           {stats.due > 0 ? (
             <Link
               to={`/${level}/review`}
-              className="mt-4 rounded-xl bg-indigo-600 px-4 py-2.5 text-center text-sm font-semibold text-white transition hover:bg-indigo-500"
+              className="mt-4 rounded-xl bg-indigo-600 px-4 py-2.5 text-center text-sm font-semibold text-white transition hover:bg-indigo-500 animate-glow-pulse"
             >
               Review {stats.due} card{stats.due === 1 ? '' : 's'}
             </Link>
