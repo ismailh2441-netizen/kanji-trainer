@@ -23,6 +23,7 @@ export default function Login() {
   const [sent, setSent] = useState(false)
   const [message, setMessage] = useState<string | null>(null)
   const [cooldown, setCooldown] = useState(0)
+  const [guestLoading, setGuestLoading] = useState(false)
 
   const from = (location.state as { from?: string } | null)?.from
   const destination = from && from.startsWith('/') && !from.startsWith('//') ? from : '/'
@@ -87,6 +88,21 @@ export default function Login() {
   function sendLink(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault()
     void requestLink()
+  }
+
+  async function continueAsGuest() {
+    if (!isSupabaseConfigured) {
+      setMessage('Supabase is not configured for this build.')
+      return
+    }
+    setGuestLoading(true)
+    setMessage(null)
+    const { error: signInError } = await supabase.auth.signInAnonymously()
+    setGuestLoading(false)
+    if (signInError) {
+      setMessage(friendlyAuthError(signInError.message))
+      return
+    }
   }
 
   return (
@@ -179,6 +195,23 @@ export default function Login() {
               )}
             </>
           )}
+        </div>
+
+        <div className="mt-4 rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
+          <div className="text-center">
+            <div className="text-sm font-medium text-slate-700">Or</div>
+            <p className="mt-1 text-xs text-slate-500">
+              Try without an account. Progress is saved to this device and can sync if you sign in later.
+            </p>
+            <button
+              type="button"
+              onClick={() => void continueAsGuest()}
+              disabled={guestLoading || sending}
+              className="mt-3 w-full rounded-xl border border-slate-300 bg-white px-4 py-2.5 text-sm font-semibold text-slate-700 transition hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-60"
+            >
+              {guestLoading ? 'Continuing as guest…' : 'Continue as guest'}
+            </button>
+          </div>
         </div>
 
         <p className="mt-5 text-center text-xs leading-5 text-slate-500">

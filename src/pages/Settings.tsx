@@ -103,7 +103,9 @@ export default function Settings() {
           <div>
             <div className="font-semibold text-slate-900">Account</div>
             <div className="mt-1 text-sm text-slate-500">
-              Signed in as <span className="font-medium text-slate-800">{user?.email ?? 'unknown'}</span>
+              {user?.is_anonymous
+                ? 'Signed in as guest'
+                : <>Signed in as <span className="font-medium text-slate-800">{user?.email ?? 'unknown'}</span></>}
             </div>
           </div>
           <span className={`rounded-full border px-2.5 py-1 text-xs font-semibold ${syncBadge}`}>
@@ -112,8 +114,9 @@ export default function Settings() {
         </div>
 
         <p className="mt-3 text-sm leading-6 text-slate-500">
-          Your review progress is saved to your account and synced to every device you sign in to.
-          This browser keeps an offline cache.
+          {user?.is_anonymous
+            ? 'You are using a guest account. Progress is saved to this device and synced to the cloud for this guest session. To sync across devices or keep progress permanently, sign in with email.'
+            : 'Your review progress is saved to your account and synced to every device you sign in to. This browser keeps an offline cache.'}
         </p>
 
         {sync.error && (
@@ -196,55 +199,57 @@ export default function Settings() {
           </button>
         </div>
 
-        <div className="mt-5 border-t border-red-200 pt-4">
-          <div className="font-semibold text-red-800">Delete account</div>
-          <p className="mt-1 text-sm leading-6 text-red-700">
-            Permanently deletes your account, sign-in email, and all cloud progress. Export a backup
-            first if you might want your progress later.
-          </p>
+        {!user?.is_anonymous && (
+          <div className="mt-5 border-t border-red-200 pt-4">
+            <div className="font-semibold text-red-800">Delete account</div>
+            <p className="mt-1 text-sm leading-6 text-red-700">
+              Permanently deletes your account, sign-in email, and all cloud progress. Export a backup
+              first if you might want your progress later.
+            </p>
 
-          {confirmDelete ? (
-            <div className="mt-3 rounded-xl border border-red-300 bg-white p-4">
-              <p className="text-sm font-medium text-red-800">
-                Delete this account and everything in it?
-              </p>
-              <div className="mt-3 flex flex-wrap gap-2">
-                <button
-                  type="button"
-                  onClick={() => void doDeleteAccount()}
-                  disabled={deleting}
-                  className="rounded-xl bg-red-600 px-4 py-2 text-sm font-semibold text-white hover:bg-red-500 disabled:opacity-60"
-                >
-                  {deleting ? 'Deleting…' : 'Delete my account permanently'}
-                </button>
-                <button
-                  type="button"
-                  onClick={() => {
-                    setConfirmDelete(false)
-                    setAccountError(null)
-                  }}
-                  disabled={deleting}
-                  className="rounded-xl border border-slate-300 bg-white px-4 py-2 text-sm font-semibold text-slate-700 hover:bg-slate-50 disabled:opacity-60"
-                >
-                  Cancel
-                </button>
-              </div>
-              {accountError && (
-                <div className="mt-3 rounded-xl border border-rose-200 bg-rose-50 px-3 py-2 text-sm text-rose-700">
-                  {accountError}
+            {confirmDelete ? (
+              <div className="mt-3 rounded-xl border border-red-300 bg-white p-4">
+                <p className="text-sm font-medium text-red-800">
+                  Delete this account and everything in it?
+                </p>
+                <div className="mt-3 flex flex-wrap gap-2">
+                  <button
+                    type="button"
+                    onClick={() => void doDeleteAccount()}
+                    disabled={deleting}
+                    className="rounded-xl bg-red-600 px-4 py-2 text-sm font-semibold text-white hover:bg-red-500 disabled:opacity-60"
+                  >
+                    {deleting ? 'Deleting…' : 'Delete my account permanently'}
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setConfirmDelete(false)
+                      setAccountError(null)
+                    }}
+                    disabled={deleting}
+                    className="rounded-xl border border-slate-300 bg-white px-4 py-2 text-sm font-semibold text-slate-700 hover:bg-slate-50 disabled:opacity-60"
+                  >
+                    Cancel
+                  </button>
                 </div>
-              )}
-            </div>
-          ) : (
-            <button
-              type="button"
-              onClick={() => setConfirmDelete(true)}
-              className="mt-3 rounded-xl border border-red-300 bg-white px-4 py-2 text-sm font-semibold text-red-700 hover:bg-red-50"
-            >
-              Delete account…
-            </button>
-          )}
-        </div>
+                {accountError && (
+                  <div className="mt-3 rounded-xl border border-rose-200 bg-rose-50 px-3 py-2 text-sm text-rose-700">
+                    {accountError}
+                  </div>
+                )}
+              </div>
+            ) : (
+              <button
+                type="button"
+                onClick={() => setConfirmDelete(true)}
+                className="mt-3 rounded-xl border border-red-300 bg-white px-4 py-2 text-sm font-semibold text-red-700 hover:bg-red-50"
+              >
+                Delete account…
+              </button>
+            )}
+          </div>
+        )}
       </div>
 
       {msg && <div className="text-sm text-slate-600">{msg}</div>}

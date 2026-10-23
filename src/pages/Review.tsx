@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import { Link, useLocation } from 'react-router-dom'
 import { useScopedDeck } from '../hooks/useScopedDeck'
 import { useLevel } from '../hooks/useLevel'
@@ -11,10 +11,10 @@ import { samplePath } from '../lib/svgpath'
 import type { Grade, KanjiEntry } from '../types'
 
 const GRADE_BUTTONS: { grade: Grade; label: string; key: string; cls: string }[] = [
-  { grade: 1, label: 'Again', key: '1', cls: 'border-rose-300 bg-rose-50 text-rose-800 hover:bg-rose-100' },
-  { grade: 2, label: 'Hard', key: '2', cls: 'border-amber-300 bg-amber-50 text-amber-800 hover:bg-amber-100' },
-  { grade: 3, label: 'Good', key: '3', cls: 'border-emerald-300 bg-emerald-50 text-emerald-800 hover:bg-emerald-100' },
-  { grade: 4, label: 'Easy', key: '4', cls: 'border-sky-300 bg-sky-50 text-sky-800 hover:bg-sky-100' },
+  { grade: 1, label: 'Again', key: '1', cls: 'border-rose-300 bg-rose-50 text-rose-800 hover:bg-rose-100 active:scale-95' },
+  { grade: 2, label: 'Hard', key: '2', cls: 'border-amber-300 bg-amber-50 text-amber-800 hover:bg-amber-100 active:scale-95' },
+  { grade: 3, label: 'Good', key: '3', cls: 'border-emerald-300 bg-emerald-50 text-emerald-800 hover:bg-emerald-100 active:scale-95' },
+  { grade: 4, label: 'Easy', key: '4', cls: 'border-sky-300 bg-sky-50 text-sky-800 hover:bg-sky-100 active:scale-95' },
 ]
 
 const TALLY_LABEL: Record<Grade, string> = { 1: 'Again', 2: 'Hard', 3: 'Good', 4: 'Easy' }
@@ -113,6 +113,11 @@ export default function Review() {
   const [done, setDone] = useState(false)
   const [showStrokes, setShowStrokes] = useState(false)
   const [strokeRun, setStrokeRun] = useState(0)
+  const [combo, setCombo] = useState(0)
+  const [feedback, setFeedback] = useState<'correct' | 'wrong' | null>(null)
+  const [feedbackKey, setFeedbackKey] = useState(0)
+  const feedbackTimer = useRef<ReturnType<typeof setTimeout> | null>(null)
+  const [cardAnim, setCardAnim] = useState<'in' | 'out' | null>(null)
 
   useEffect(() => {
     if (!deck || !level) return
@@ -127,7 +132,16 @@ export default function Review() {
     setTally({ 1: 0, 2: 0, 3: 0, 4: 0 })
     setDone(false)
     setShowStrokes(false)
+    setCombo(0)
+    setFeedback(null)
+    setCardAnim(null)
   }, [deck, level, session, forceAll, practice, section])
+
+  useEffect(() => {
+    return () => {
+      if (feedbackTimer.current) clearTimeout(feedbackTimer.current)
+    }
+  }, [])
 
   const index = useMemo(() => queue[0], [queue])
   const entry: KanjiEntry | undefined = useMemo(
@@ -135,19 +149,48 @@ export default function Review() {
     [deck, index],
   )
 
+  useEffect(() => {
+    if (cardAnim === 'in') {
+      const timer = setTimeout(() => setCardAnim(null), 400)
+      return () => clearTimeout(timer)
+    }
+  }, [cardAnim])
+
   const { strokes, loading: strokesLoading } = useStrokes(entry?.kanji ?? null)
 
   function grade(g: Grade) {
-    if (!entry || !level || done) return
+    if (!entry || !level || done || cardAnim === 'out') return
     recordStudy(level, entry.kanji, g)
     setTally((t) => ({ ...t, [g]: t[g] + 1 }))
 
     if (g === 1) {
+      setCombo(0)
+      setFeedback('wrong')
+      setFeedbackKey((k) => k + 1)
+      if (feedbackTimer.current) clearTimeout(feedbackTimer.current)
+      feedbackTimer.current = setTimeout(() => setFeedback(null), 420)
       setQueue((q) => [...q.slice(1), q[0]])
     } else {
-      const next = queue.slice(1)
-      setQueue(next)
-      if (next.length === 0) setDone(true)
+      setCombo((c) => c + 1)
+      setFeedback('correct')
+      setFeedbackKey((k) => k + 1)
+      if (feedbackTimer.current) clearTimeout(feedbackTimer.current)
+      feedbackTimer.current = setTimeout(() => setFeedback(null), 520)
+      const nextQueue = queue.slice(1)
+      setCardAnim('out')
+      setTimeout(() => {
+        setQueue(nextQueue)
+        if (nextQueue.length === 0) {
+          setDone(true)
+          setCardAnim(null)
+        } else {
+          setRevealed(false)
+          setShowStrokes(false)
+          setCardAnim('in')
+        }
+        setFeedback(null)
+      }, 400)
+      return
     }
     setRevealed(false)
     setShowStrokes(false)
@@ -183,32 +226,39 @@ export default function Review() {
 
   if (done) {
     const total = tally[1] + tally[2] + tally[3] + tally[4]
+    const perfect = tally[1] === 0
     return (
-      <div className="mx-auto max-w-xl rounded-2xl border border-slate-200 bg-white p-10 text-center shadow-sm">
-        <div className="mx-auto grid size-14 place-items-center rounded-full bg-emerald-100 text-2xl font-bold text-emerald-700">
+      <div className="mx-auto max-w-xl rounded-2xl border border-slate-200 bg-white p-10 text-center shadow-sm animate-fade-in-scale">
+        <div className="mx-auto grid size-14 place-items-center rounded-full bg-emerald-100 text-2xl font-bold text-emerald-700 animate-pop-in">
           ✓
         </div>
-        <h2 className="mt-4 text-xl font-bold text-slate-900">Session complete</h2>
-        <p className="mt-1 text-slate-500">{total} card{total === 1 ? '' : 's'} reviewed.</p>
+        <h2 className="mt-4 text-xl font-bold text-slate-900 animate-fade-in-up">Session complete</h2>
+        <p className="mt-1 text-slate-500 animate-fade-in-up">
+          {total} card{total === 1 ? '' : 's'} reviewed{perfect && total > 0 ? ' · Perfect!' : ''}.
+        </p>
         <div className="mt-5 flex justify-center gap-3 text-sm">
-          {GRADE_BUTTONS.map((b) => (
-            <div key={b.grade} className="rounded-xl border border-slate-200 px-3 py-2">
+          {GRADE_BUTTONS.map((b, idx) => (
+            <div
+              key={b.grade}
+              className="rounded-xl border border-slate-200 px-3 py-2 animate-fade-in-up"
+              style={{ animationDelay: `${idx * 60}ms` }}
+            >
               <div className="text-slate-500">{TALLY_LABEL[b.grade]}</div>
               <div className="font-bold text-slate-900">{tally[b.grade]}</div>
             </div>
           ))}
         </div>
-        <div className="mt-6 flex justify-center gap-3">
+        <div className="mt-6 flex justify-center gap-3 animate-fade-in-up" style={{ animationDelay: '280ms' }}>
           <Link
             to={`/${level}${location.search}`}
-            className="rounded-xl border border-slate-300 bg-white px-4 py-2 text-sm font-semibold text-slate-700 hover:bg-slate-50"
+            className="rounded-xl border border-slate-300 bg-white px-4 py-2 text-sm font-semibold text-slate-700 hover:bg-slate-50 active:scale-95 transition-transform"
           >
             Dashboard
           </Link>
           <button
             type="button"
             onClick={() => { setForceAll(true); setSession((s) => s + 1); }}
-            className="rounded-xl bg-indigo-600 px-4 py-2 text-sm font-semibold text-white hover:bg-indigo-500"
+            className="rounded-xl bg-indigo-600 px-4 py-2 text-sm font-semibold text-white hover:bg-indigo-500 active:scale-95 transition-transform"
           >
             {practice ? 'Practice again' : 'Keep studying'}
           </button>
@@ -281,18 +331,32 @@ export default function Review() {
           {practice ? 'Practice · ' : ''}
           {queue.length} card{queue.length === 1 ? '' : 's'} left
         </span>
-        <span>{entry.strokes} strokes</span>
+        <div className="flex items-center gap-2">
+          {combo > 1 && (
+            <span key={combo} className="rounded-full bg-emerald-100 px-2 py-0.5 font-semibold text-emerald-700 animate-pop-in">
+              Combo {combo}x
+            </span>
+          )}
+          <span>{entry.strokes} strokes</span>
+        </div>
       </div>
 
-      <div className="rounded-2xl border border-slate-200 bg-white shadow-sm">
+      <div
+        key={`${entry.kanji}-${feedbackKey}`}
+        className={`rounded-2xl border border-slate-200 bg-white shadow-sm transition-transform ${
+          feedback === 'wrong' ? 'animate-shake' : cardAnim === 'out' ? 'animate-slide-out-left' : cardAnim === 'in' ? 'animate-slide-in-right-edge' : ''
+        }`}
+      >
         <div
           className={`flex min-h-56 flex-col items-center justify-center rounded-t-2xl px-6 py-10 ${theme.bg}`}
         >
-          <div className="font-jp text-8xl leading-none text-slate-900">{entry.kanji}</div>
+          <div className={`font-jp text-8xl leading-none text-slate-900 ${feedback === 'correct' ? 'animate-pop-in' : ''}`}>
+            {entry.kanji}
+          </div>
         </div>
 
         {revealed && (
-          <div className="border-t border-slate-200 px-6 py-5">
+          <div className="border-t border-slate-200 px-6 py-5 animate-fade-in-up">
             <div className="font-bold text-slate-900">{entry.meanings.join(', ')}</div>
             <div className="mt-2 flex flex-wrap gap-x-6 gap-y-1 text-sm">
               <div>
@@ -314,7 +378,7 @@ export default function Review() {
                     <button
                       type="button"
                       onClick={() => setStrokeRun((r) => r + 1)}
-                      className="rounded-xl border border-slate-300 px-3 py-1.5 text-xs font-semibold text-slate-700 hover:bg-slate-50"
+                      className="rounded-xl border border-slate-300 px-3 py-1.5 text-xs font-semibold text-slate-700 hover:bg-slate-50 active:scale-95 transition-transform"
                     >
                       Replay
                     </button>
@@ -322,7 +386,7 @@ export default function Review() {
                   <button
                     type="button"
                     onClick={() => setShowStrokes((v) => !v)}
-                    className="rounded-xl border border-indigo-300 bg-indigo-50 px-3 py-1.5 text-xs font-semibold text-indigo-700 hover:bg-indigo-100"
+                    className="rounded-xl border border-indigo-300 bg-indigo-50 px-3 py-1.5 text-xs font-semibold text-indigo-700 hover:bg-indigo-100 active:scale-95 transition-transform"
                   >
                     {showStrokes ? 'Hide' : 'Show writing motion'}
                   </button>
@@ -386,7 +450,7 @@ export default function Review() {
                 setRevealed(true)
                 setShowStrokes(true)
               }}
-              className="w-full rounded-xl bg-indigo-600 px-4 py-3 font-semibold text-white transition hover:bg-indigo-500"
+              className="w-full rounded-xl bg-indigo-600 px-4 py-3 font-semibold text-white transition hover:bg-indigo-500 active:scale-[0.98]"
             >
               Show answer
               <span className="ml-2 text-xs font-normal text-indigo-200">Space</span>
@@ -398,7 +462,7 @@ export default function Review() {
                   key={b.grade}
                   type="button"
                   onClick={() => grade(b.grade)}
-                  className={`rounded-xl border px-2 py-2.5 text-sm font-semibold transition ${b.cls}`}
+                  className={`rounded-xl border px-2 py-2.5 text-sm font-semibold transition-transform ${b.cls}`}
                 >
                   <div>{b.label}</div>
                   <div className="text-xs font-normal opacity-70">
