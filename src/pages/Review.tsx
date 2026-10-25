@@ -7,7 +7,7 @@ import { buildQueue, LEVEL_THEME } from '../lib/levels'
 import { dateStr, previewIvl } from '../lib/srs'
 import { getProgress, recordStudy, useProgress } from '../lib/storage'
 import { masuForms } from '../data/masu-forms'
-import { samplePath } from '../lib/svgpath'
+import WritingPractice from '../components/WritingPractice'
 import type { Grade, KanjiEntry } from '../types'
 
 const GRADE_BUTTONS: { grade: Grade; label: string; key: string; cls: string }[] = [
@@ -18,84 +18,6 @@ const GRADE_BUTTONS: { grade: Grade; label: string; key: string; cls: string }[]
 ]
 
 const TALLY_LABEL: Record<Grade, string> = { 1: 'Again', 2: 'Hard', 3: 'Good', 4: 'Easy' }
-
-/** Seconds each stroke takes to draw, plus the pause before the next one. */
-const STROKE_DUR = 0.5
-const STROKE_GAP = 0.2
-
-/**
- * Animated stroke-order display (writing motion).
- * Draws each KanjiVG stroke in sequence over a faint guide of the full character,
- * with numbered markers at each stroke's starting point.
- * `run` acts as a remount key so Replay restarts the animation.
- */
-function StrokeAnimation({ strokes, run }: { strokes: string[]; run: number }) {
-  const starts = useMemo(() => strokes.map((d) => samplePath(d)[0]), [strokes])
-  return (
-    <svg
-      key={run}
-      viewBox="0 0 109 109"
-      className="mx-auto mt-3 w-44 rounded-xl border border-slate-100 bg-slate-50/80"
-      role="img"
-      aria-label="Stroke order animation"
-    >
-      {/* Faint guide of the complete character */}
-      {strokes.map((d, i) => (
-        <path
-          key={`guide-${i}`}
-          d={d}
-          fill="none"
-          stroke="#e2e8f0"
-          strokeWidth={5}
-          strokeLinecap="round"
-          strokeLinejoin="round"
-        />
-      ))}
-      {/* Strokes drawn one by one (writing motion) */}
-      {strokes.map((d, i) => (
-        <path
-          key={`draw-${i}`}
-          d={d}
-          fill="none"
-          stroke="#1e293b"
-          strokeWidth={5}
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          pathLength={1}
-          className="kanji-stroke-anim"
-          style={{
-            strokeDasharray: 1,
-            animation: `kanji-stroke-draw ${STROKE_DUR}s ease-out ${
-              i * (STROKE_DUR + STROKE_GAP)
-            }s both`,
-          }}
-        />
-      ))}
-      {/* Numbered start markers, appearing as each stroke begins */}
-      {starts.map((p, i) =>
-        p ? (
-          <g
-            key={`num-${i}`}
-            className="kanji-marker-anim"
-            style={{ animation: `kanji-marker-in 0.15s ease-out ${i * (STROKE_DUR + STROKE_GAP)}s both` }}
-          >
-            <circle cx={p.x} cy={p.y} r={5.5} fill="#6366f1" />
-            <text
-              x={p.x}
-              y={p.y + 2.6}
-              textAnchor="middle"
-              fontSize={7.5}
-              fontWeight="bold"
-              fill="#ffffff"
-            >
-              {i + 1}
-            </text>
-          </g>
-        ) : null,
-      )}
-    </svg>
-  )
-}
 
 export default function Review() {
   const level = useLevel()
@@ -112,7 +34,6 @@ export default function Review() {
   const [tally, setTally] = useState<Record<Grade, number>>({ 1: 0, 2: 0, 3: 0, 4: 0 })
   const [done, setDone] = useState(false)
   const [showStrokes, setShowStrokes] = useState(false)
-  const [strokeRun, setStrokeRun] = useState(0)
   const [combo, setCombo] = useState(0)
   const [feedback, setFeedback] = useState<'correct' | 'wrong' | null>(null)
   const [feedbackKey, setFeedbackKey] = useState(0)
@@ -387,47 +308,26 @@ export default function Review() {
               </div>
             </div>
 
-            {/* Stroke order / writing motion */}
+            {/* Writing practice: animated stroke order + tracing canvas */}
             <div className="mt-4 border-t border-slate-100 pt-4">
               <div className="flex items-center justify-between gap-3">
-                <span className="text-sm font-semibold text-slate-700">Stroke order</span>
-                <div className="flex gap-2">
-                  {showStrokes && strokes && strokes.length > 0 && (
-                    <button
-                      type="button"
-                      onClick={() => setStrokeRun((r) => r + 1)}
-                      className="rounded-xl border border-slate-300 px-3 py-1.5 text-xs font-semibold text-slate-700 hover:bg-slate-50 active:scale-95 transition-transform"
-                    >
-                      Replay
-                    </button>
-                  )}
-                  <button
-                    type="button"
-                    onClick={() => setShowStrokes((v) => !v)}
-                    className="rounded-xl border border-indigo-300 bg-indigo-50 px-3 py-1.5 text-xs font-semibold text-indigo-700 hover:bg-indigo-100 active:scale-95 transition-transform"
-                  >
-                    {showStrokes ? 'Hide' : 'Show writing motion'}
-                  </button>
-                </div>
+                <span className="text-sm font-semibold text-slate-700">Writing practice</span>
+                <button
+                  type="button"
+                  onClick={() => setShowStrokes((v) => !v)}
+                  className="rounded-xl border border-indigo-300 bg-indigo-50 px-3 py-1.5 text-xs font-semibold text-indigo-700 hover:bg-indigo-100 active:scale-95 transition-transform"
+                >
+                  {showStrokes ? 'Hide' : 'Practice writing'}
+                </button>
               </div>
 
               {showStrokes && (
-                <div className="mt-2">
-                  {strokesLoading ? (
-                    <p className="text-center text-sm text-slate-500">Loading strokes…</p>
-                  ) : strokes && strokes.length > 0 ? (
-                    <>
-                      <StrokeAnimation strokes={strokes} run={strokeRun} />
-                      <p className="mt-2 text-center text-xs text-slate-500">
-                        {strokes.length} strokes · drawn in order
-                      </p>
-                    </>
-                  ) : (
-                    <p className="text-center text-sm text-slate-500">
-                      Stroke data unavailable for {entry.kanji}.
-                    </p>
-                  )}
-                </div>
+                <WritingPractice
+                  className="mt-3"
+                  kanji={entry.kanji}
+                  strokes={strokes}
+                  loading={strokesLoading}
+                />
               )}
             </div>
 
