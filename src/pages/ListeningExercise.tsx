@@ -142,16 +142,6 @@ export default function ListeningExercise() {
     return s
   }
 
-  function handleInputChange(e: React.ChangeEvent<HTMLTextAreaElement>) {
-    const value = e.target.value
-    const value2 = value.replace(/--/g, 'ー')
-    if (mode === 'japanese' && romajiMode && !submitted) {
-      setInput(toKanaRomaji(value2))
-    } else {
-      setInput(value2)
-    }
-  }
-
   const lvlNum = Number.parseInt(listeningLevel ?? '', 10) as 1 | 2 | 3
   const lvl = getListeningLevel(lvlNum)
   const exercise = exerciseId ? getListeningExercise(lvlNum, exerciseId) : undefined
@@ -187,17 +177,17 @@ export default function ListeningExercise() {
     let isCorrect = false
     if (mode === 'japanese') {
       const user = normalizeJapanese(input)
-      const targets = [exercise.scriptJa, exercise.scriptKana]
+      const targets = [exercise!.scriptJa, exercise!.scriptKana]
         .filter((t): t is string => Boolean(t))
         .map(normalizeJapanese)
       isCorrect = user.length > 0 && targets.includes(user)
     } else {
-      isCorrect = checkMeaningAnswer(input, exercise.acceptableMeanings)
+      isCorrect = checkMeaningAnswer(input, exercise!.acceptableMeanings)
     }
     setCorrect(isCorrect)
     setSubmitted(true)
     if (isCorrect) {
-      markListeningComplete(levelKey, exercise.id)
+      markListeningComplete(levelKey, exercise!.id)
     }
   }
 
@@ -227,9 +217,9 @@ export default function ListeningExercise() {
 
   function handleNext() {
     if (nextExercise) {
-      navigate(`/${level}/listening/${lvl.id}/${nextExercise.id}`)
+      navigate(`/${level}/listening/${lvl!.id}/${nextExercise.id}`)
     } else {
-      navigate(`/${level}/listening/${lvl.id}`)
+      navigate(`/${level}/listening/${lvl!.id}`)
     }
   }
 
