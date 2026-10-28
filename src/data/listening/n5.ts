@@ -196,7 +196,7 @@ export const listeningN5: ListeningLevelData[] = [
         audioUrl: '/audio/n5/listening/l2/n5-l2-01.mp3',
         scriptJa: 'まいあさ 6じに おきます。\\n7じに あさごはんを たべます。\\nそれから、バスで がっこうへ いきます。\\nがっこうは 8じに はじまります。',
         scriptKana: 'まいあさ 6じに おきます。\\n7じに あさごはんを たべます。\\nそれから、バスで がっこうへ いきます。\\nがっこうは 8じに はじまります。',
-        acceptableMeanings: ['I wake up at 6 o\\'clock every morning.\\nI eat breakfast at 7 o\\'clock.\\nAfter that, I go to school by bus.\\nSchool starts at 8 o\\'clock.'],
+        acceptableMeanings: ['I wake up at 6 o\'clock every morning.\\nI eat breakfast at 7 o\'clock.\\nAfter that, I go to school by bus.\\nSchool starts at 8 o\'clock.'],
         hint: 'Morning routine',
       },
       {
@@ -205,7 +205,7 @@ export const listeningN5: ListeningLevelData[] = [
         audioUrl: '/audio/n5/listening/l2/n5-l2-02.mp3',
         scriptJa: 'A: なにを たべますか。\\nB: カレーを たべます。\\nA: のみものは どうしますか。\\nB: みずを おねがいします。',
         scriptKana: 'A: なにを たべますか。\\nB: カレーを たべます。\\nA: のみものは どうしますか。\\nB: みずを おねがいします。',
-        acceptableMeanings: ['A: What will you eat?\\nB: I\\'ll eat curry.\\nA: What would you like to drink?\\nB: Water, please.'],
+        acceptableMeanings: ['A: What will you eat?\\nB: I\'ll eat curry.\\nA: What would you like to drink?\\nB: Water, please.'],
         hint: 'Restaurant',
       },
       {
@@ -223,7 +223,7 @@ export const listeningN5: ListeningLevelData[] = [
         audioUrl: '/audio/n5/listening/l2/n5-l2-04.mp3',
         scriptJa: 'A: これは だれの ほんですか。\\nB: わたしの ほんです。\\nA: いつ かいましたか。\\nB: きのう かいました。',
         scriptKana: 'A: これは だれの ほんですか。\\nB: わたしの ほんです。\\nA: いつ かいましたか。\\nB: きのう かいました。',
-        acceptableMeanings: ['A: Whose book is this?\\nB: It\\'s my book.\\nA: When did you buy it?\\nB: I bought it yesterday.'],
+        acceptableMeanings: ['A: Whose book is this?\\nB: It\'s my book.\\nA: When did you buy it?\\nB: I bought it yesterday.'],
         hint: 'Library',
       },
       {
@@ -236,6 +236,7 @@ export const listeningN5: ListeningLevelData[] = [
         hint: 'Family',
       },
     ],
+  },
   {
     id: 3,
     name: 'Level 3',
