@@ -17,6 +17,25 @@ export interface KanjiEntry {
   examples: Example[]
 }
 
+export interface VocabWord {
+  /** Main kana/katakana spelling shown to the learner. */
+  word: string
+  /** Optional kanji spelling, e.g. 現金 for げんきん. */
+  kanji?: string
+  english: string
+  /** Japanese verb group, when the word is a verb. */
+  group?: 'I' | 'II' | 'III'
+  /** Optional usage pattern, e.g. やまに～ for のぼります. */
+  usage?: string
+}
+
+export interface VocabLesson {
+  /** Lesson number, e.g. 18. */
+  id: number
+  title: string
+  words: VocabWord[]
+}
+
 export type CardState = 'learning' | 'review' | 'relearning'
 
 export interface Card {
@@ -49,4 +68,22 @@ export interface Progress {
   streak: { last: string; count: number }
   /** Local-modified time (ms), used to resolve settings/streak conflicts. */
   updatedAt?: number
+}
+
+export interface ListeningExercise {
+  id: string
+  level: 1 | 2 | 3
+  audioUrl: string
+  scriptJa: string
+  /** Fully kana version of the script, so kana-only answers are accepted. */
+  scriptKana?: string
+  acceptableMeanings: string[]
+  hint?: string
+}
+
+export interface ListeningLevelData {
+  id: 1 | 2 | 3
+  name: string
+  description: string
+  exercises: ListeningExercise[]
 }

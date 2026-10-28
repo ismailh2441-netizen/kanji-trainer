@@ -3,11 +3,14 @@ import { useLevel } from '../hooks/useLevel'
 import { LEVEL_LABEL, LEVEL_NAME, levelStats } from '../lib/levels'
 import { parseSection } from '../lib/sections'
 import { levelTotals } from '../data/meta'
+import { hasVocab } from '../data/vocab'
 import { useProgress } from '../lib/storage'
 
 const TABS = [
   { to: '', label: 'Dashboard', end: true },
   { to: 'sections', label: 'Sections' },
+  { to: 'vocab', label: 'Vocabulary' },
+  { to: 'listening', label: 'Listening' },
   { to: 'review', label: 'Review', badge: 'due' as const },
   { to: 'quiz', label: 'Quiz' },
   { to: 'write', label: 'Write' },
@@ -22,6 +25,7 @@ export default function LevelShell() {
   if (!level) return <Navigate to="/" replace />
 
   const stats = levelStats(progress, level, levelTotals[level])
+  const tabs = TABS.filter((tab) => tab.to !== 'vocab' || hasVocab(level))
 
   // Keep the active section (`?section=N`) attached to every tab while one is
   // selected. On a section detail page, the path itself carries the section.
@@ -46,7 +50,7 @@ export default function LevelShell() {
       </div>
 
       <nav className="mb-6 flex gap-1 overflow-x-auto border-b border-slate-200">
-        {TABS.map((tab) => (
+        {tabs.map((tab) => (
           <NavLink
             key={tab.to}
             to={`${tab.to ? `/${level}/${tab.to}` : `/${level}`}${search}`}

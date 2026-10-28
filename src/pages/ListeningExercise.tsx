@@ -69,36 +69,87 @@ export default function ListeningExercise() {
 
   function toKanaRomaji(input: string): string {
     if (!input) return input
-    return input
-      .replace(/n([b-df-hj-np-tv-z])/gi, 'ん$1')
-      .replace(/nn/gi, 'ん')
-      .replace(/n$/gi, 'ん')
-      .replace(/ka/gi, 'か').replace(/ki/gi, 'き').replace(/ku/gi, 'く').replace(/ke/gi, 'け').replace(/ko/gi, 'こ')
-      .replace(/sa/gi, 'さ').replace(/shi/gi, 'し').replace(/su/gi, 'す').replace(/se/gi, 'せ').replace(/so/gi, 'そ')
-      .replace(/ta/gi, 'た').replace(/chi/gi, 'ち').replace(/tsu/gi, 'つ').replace(/te/gi, 'て').replace(/to/gi, 'と')
-      .replace(/na/gi, 'な').replace(/ni/gi, 'に').replace(/nu/gi, 'ぬ').replace(/ne/gi, 'ね').replace(/no/gi, 'の')
-      .replace(/ha/gi, 'は').replace(/hi/gi, 'ひ').replace(/fu/gi, 'ふ').replace(/he/gi, 'へ').replace(/ho/gi, 'ほ')
-      .replace(/ma/gi, 'ま').replace(/mi/gi, 'み').replace(/mu/gi, 'む').replace(/me/gi, 'め').replace(/mo/gi, 'も')
-      .replace(/ya/gi, 'や').replace(/yu/gi, 'ゆ').replace(/yo/gi, 'よ')
-      .replace(/ra/gi, 'ら').replace(/ri/gi, 'り').replace(/ru/gi, 'る').replace(/re/gi, 'れ').replace(/ro/gi, 'ろ')
-      .replace(/wa/gi, 'わ').replace(/wo/gi, 'を')
-      .replace(/ga/gi, 'が').replace(/gi/gi, 'ぎ').replace(/gu/gi, 'ぐ').replace(/ge/gi, 'げ').replace(/go/gi, 'ご')
-      .replace(/za/gi, 'ざ').replace(/ji/gi, 'じ').replace(/zu/gi, 'ず').replace(/ze/gi, 'ぜ').replace(/zo/gi, 'ぞ')
-      .replace(/da/gi, 'だ').replace(/di/gi, 'ぢ').replace(/du/gi, 'づ').replace(/de/gi, 'で').replace(/do/gi, 'ど')
-      .replace(/ba/gi, 'ば').replace(/bi/gi, 'び').replace(/bu/gi, 'ぶ').replace(/be/gi, 'べ').replace(/bo/gi, 'ぼ')
-      .replace(/pa/gi, 'ぱ').replace(/pi/gi, 'ぴ').replace(/pu/gi, 'ぷ').replace(/pe/gi, 'ぺ').replace(/po/gi, 'ぽ')
-      .replace(/kya/gi, 'きゃ').replace(/kyu/gi, 'きゅ').replace(/kyo/gi, 'きょ')
-      .replace(/sha/gi, 'しゃ').replace(/shu/gi, 'しゅ').replace(/sho/gi, 'しょ')
-      .replace(/cha/gi, 'ちゃ').replace(/chu/gi, 'ちゅ').replace(/cho/gi, 'ちょ')
-      .replace(/nya/gi, 'にゃ').replace(/nyu/gi, 'にゅ').replace(/nyo/gi, 'にょ')
-      .replace(/hya/gi, 'ひゃ').replace(/hyu/gi, 'ひゅ').replace(/hyo/gi, 'ひょ')
-      .replace(/mya/gi, 'みゃ').replace(/myu/gi, 'みゅ').replace(/myo/gi, 'みょ')
-      .replace(/rya/gi, 'りゃ').replace(/ryu/gi, 'りゅ').replace(/ryo/gi, 'りょ')
-      .replace(/gya/gi, 'ぎゃ').replace(/gyu/gi, 'ぎゅ').replace(/gyo/gi, 'ぎょ')
-      .replace(/ja/gi, 'じゃ').replace(/ju/gi, 'じゅ').replace(/jo/gi, 'じょ')
-      .replace(/bya/gi, 'びゃ').replace(/byu/gi, 'びゅ').replace(/byo/gi, 'びょ')
-      .replace(/pya/gi, 'ぴゃ').replace(/pyu/gi, 'ぴゅ').replace(/pyo/gi, 'ぴょ')
-      .replace(/a/gi, 'あ').replace(/i/gi, 'い').replace(/u/gi, 'う').replace(/e/gi, 'え').replace(/o/gi, 'お')
+    const isUpper = input === input.toUpperCase() && /[A-Z]/.test(input)
+    let s = input
+    // Handle small tsu (double consonants)
+    s = s.replace(/([bcdfghjklmpqrstvwxyz])\1/gi, 'っ$1')
+    // Handle nn -> ん only (no standalone n -> ん)
+    s = s.replace(/nn/gi, 'ん')
+    // Youon (longer patterns first)
+    s = s.replace(/kya/gi, 'きゃ').replace(/kyu/gi, 'きゅ').replace(/kyo/gi, 'きょ')
+    s = s.replace(/sha/gi, 'しゃ').replace(/shu/gi, 'しゅ').replace(/sho/gi, 'しょ')
+    s = s.replace(/cha/gi, 'ちゃ').replace(/chu/gi, 'ちゅ').replace(/cho/gi, 'ちょ')
+    s = s.replace(/nya/gi, 'にゃ').replace(/nyu/gi, 'にゅ').replace(/nyo/gi, 'にょ')
+    s = s.replace(/hya/gi, 'ひゃ').replace(/hyu/gi, 'ひゅ').replace(/hyo/gi, 'ひょ')
+    s = s.replace(/mya/gi, 'みゃ').replace(/myu/gi, 'みゅ').replace(/myo/gi, 'みょ')
+    s = s.replace(/rya/gi, 'りゃ').replace(/ryu/gi, 'りゅ').replace(/ryo/gi, 'りょ')
+    s = s.replace(/gya/gi, 'ぎゃ').replace(/gyu/gi, 'ぎゅ').replace(/gyo/gi, 'ぎょ')
+    s = s.replace(/ja/gi, 'じゃ').replace(/ju/gi, 'じゅ').replace(/jo/gi, 'じょ')
+    s = s.replace(/bya/gi, 'びゃ').replace(/byu/gi, 'びゅ').replace(/byo/gi, 'びょ')
+    s = s.replace(/pya/gi, 'ぴゃ').replace(/pyu/gi, 'ぴゅ').replace(/pyo/gi, 'ぴょ')
+    // Syllables with 2 chars (longer first)
+    s = s.replace(/chi/gi, 'ち').replace(/shi/gi, 'し').replace(/si/gi, 'し').replace(/tsu/gi, 'つ').replace(/fu/gi, 'ふ').replace(/hu/gi, 'ふ')
+    s = s.replace(/ji/gi, 'じ').replace(/zi/gi, 'じ').replace(/ti/gi, 'ち').replace(/di/gi, 'ぢ').replace(/du/gi, 'づ')
+    // Gojuon
+    s = s.replace(/ka/gi, 'か').replace(/ki/gi, 'き').replace(/ku/gi, 'く').replace(/ke/gi, 'け').replace(/ko/gi, 'こ')
+    s = s.replace(/sa/gi, 'さ').replace(/su/gi, 'す').replace(/se/gi, 'せ').replace(/so/gi, 'そ')
+    s = s.replace(/ta/gi, 'た').replace(/te/gi, 'て').replace(/to/gi, 'と')
+    s = s.replace(/na/gi, 'な').replace(/ni/gi, 'に').replace(/nu/gi, 'ぬ').replace(/ne/gi, 'ね').replace(/no/gi, 'の')
+    s = s.replace(/ha/gi, 'は').replace(/hi/gi, 'ひ').replace(/he/gi, 'へ').replace(/ho/gi, 'ほ')
+    s = s.replace(/ma/gi, 'ま').replace(/mi/gi, 'み').replace(/mu/gi, 'む').replace(/me/gi, 'め').replace(/mo/gi, 'も')
+    s = s.replace(/ya/gi, 'や').replace(/yu/gi, 'ゆ').replace(/yo/gi, 'よ')
+    s = s.replace(/ra/gi, 'ら').replace(/ri/gi, 'り').replace(/ru/gi, 'る').replace(/re/gi, 'れ').replace(/ro/gi, 'ろ')
+    s = s.replace(/wa/gi, 'わ').replace(/wo/gi, 'を')
+    s = s.replace(/ga/gi, 'が').replace(/gi/gi, 'ぎ').replace(/gu/gi, 'ぐ').replace(/ge/gi, 'げ').replace(/go/gi, 'ご')
+    s = s.replace(/za/gi, 'ざ').replace(/zu/gi, 'ず').replace(/ze/gi, 'ぜ').replace(/zo/gi, 'ぞ')
+    s = s.replace(/da/gi, 'だ').replace(/de/gi, 'で').replace(/do/gi, 'ど')
+    s = s.replace(/ba/gi, 'ば').replace(/bi/gi, 'び').replace(/bu/gi, 'ぶ').replace(/be/gi, 'べ').replace(/bo/gi, 'ぼ')
+    s = s.replace(/pa/gi, 'ぱ').replace(/pi/gi, 'ぴ').replace(/pu/gi, 'ぷ').replace(/pe/gi, 'ぺ').replace(/po/gi, 'ぽ')
+    s = s.replace(/a/gi, 'あ').replace(/i/gi, 'い').replace(/u/gi, 'う').replace(/e/gi, 'え').replace(/o/gi, 'お')
+    if (isUpper) {
+      const katakanaMap: Record<string, string> = {
+        'あ': 'ア','い': 'イ','う': 'ウ','え': 'エ','お': 'オ',
+        'か': 'カ','き': 'キ','く': 'ク','け': 'ケ','こ': 'コ',
+        'さ': 'サ','し': 'シ','す': 'ス','せ': 'セ','そ': 'ソ',
+        'た': 'タ','ち': 'チ','つ': 'ツ','て': 'テ','と': 'ト',
+        'な': 'ナ','に': 'ニ','ぬ': 'ヌ','ね': 'ネ','の': 'ノ',
+        'は': 'ハ','ひ': 'ヒ','ふ': 'フ','へ': 'ヘ','ほ': 'ホ',
+        'ま': 'マ','み': 'ミ','む': 'ム','め': 'メ','も': 'モ',
+        'や': 'ヤ','ゆ': 'ユ','よ': 'ヨ',
+        'ら': 'ラ','り': 'リ','る': 'ル','れ': 'レ','ろ': 'ロ',
+        'わ': 'ワ','を': 'ヲ','ん': 'ン',
+        'が': 'ガ','ぎ': 'ギ','ぐ': 'グ','げ': 'ゲ','ご': 'ゴ',
+        'ざ': 'ザ','じ': 'ジ','ず': 'ズ','ぜ': 'ゼ','ぞ': 'ゾ',
+        'だ': 'ダ','ぢ': 'ヂ','づ': 'ヅ','で': 'デ','ど': 'ド',
+        'ば': 'バ','び': 'ビ','ぶ': 'ブ','べ': 'ベ','ぼ': 'ボ',
+        'ぱ': 'パ','ぴ': 'ピ','ぷ': 'プ','ぺ': 'ペ','ぽ': 'ポ',
+        'っ': 'ッ',
+        'きゃ': 'キャ','きゅ': 'キュ','きょ': 'キョ',
+        'しゃ': 'シャ','しゅ': 'シュ','しょ': 'ショ',
+        'ちゃ': 'チャ','ちゅ': 'チュ','ちょ': 'チョ',
+        'にゃ': 'ニャ','にゅ': 'ニュ','にょ': 'ニョ',
+        'ひゃ': 'ヒャ','ひゅ': 'ヒュ','ひょ': 'ヒョ',
+        'みゃ': 'ミャ','みゅ': 'ミュ','みょ': 'ミョ',
+        'りゃ': 'リャ','りゅ': 'リュ','りょ': 'リョ',
+        'ぎゃ': 'ギャ','ぎゅ': 'ギュ','ぎょ': 'ギョ',
+        'じゃ': 'ジャ','じゅ': 'ジュ','じょ': 'ジョ',
+        'びゃ': 'ビャ','びゅ': 'ビュ','びょ': 'ビョ',
+        'ぴゃ': 'ピャ','ぴゅ': 'ピュ','ぴょ': 'ピョ',
+      }
+      // Only convert the last syllable to katakana
+      s = s.replace(/([きしちにひみりぎじびぴ][ゃゅょ]|[あ-んっ])$/, (m) => katakanaMap[m] || m.toUpperCase())
+    }
+    return s
+  }
+
+  function handleInputChange(e: React.ChangeEvent<HTMLTextAreaElement>) {
+    const value = e.target.value
+    const value2 = value.replace(/--/g, 'ー')
+    if (mode === 'japanese' && romajiMode && !submitted) {
+      setInput(toKanaRomaji(value2))
+    } else {
+      setInput(value2)
+    }
   }
 
   const lvlNum = Number.parseInt(listeningLevel ?? '', 10) as 1 | 2 | 3
@@ -158,10 +209,11 @@ export default function ListeningExercise() {
 
   function handleInputChange(e: React.ChangeEvent<HTMLTextAreaElement>) {
     const value = e.target.value
+    const value2 = value.replace(/--/g, 'ー')
     if (mode === 'japanese' && romajiMode && !submitted) {
-      setInput(toKanaRomaji(value))
+      setInput(toKanaRomaji(value2))
     } else {
-      setInput(value)
+      setInput(value2)
     }
   }
 

@@ -11,6 +11,7 @@ A web app for learning Japanese kanji by JLPT level, with spaced-repetition revi
 - **Quizzes** — test meanings and readings for the level you're studying.
 - **Writing practice** — trace kanji stroke by stroke using KanjiVG data.
 - **Browse & sections** — explore the full deck or work through smaller groups.
+- **Vocabulary lessons** — study themed word lists (starting with N5 Lessons 18–19) and quiz both directions.
 - **Accounts** — passwordless email sign-in with a magic link.
 - **Cloud progress** — SRS state syncs across devices, with `localStorage` kept as an offline cache.
 - **Self-service account deletion** — removes the account and cloud progress from Settings.

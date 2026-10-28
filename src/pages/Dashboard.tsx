@@ -23,6 +23,11 @@ const ACTIONS: { to: (l: string) => string; title: string; blurb: string; span?:
     blurb: 'Learn stroke order, then trace from memory.',
   },
   {
+    to: (l: string) => `/${l}/listening`,
+    title: 'Listening practice',
+    blurb: 'Dictation practice - listen and write in Japanese or English.',
+  },
+  {
     to: (l: string) => `/${l}/browse`,
     title: 'Browse kanji',
     blurb: 'Look up any kanji with readings and examples.',
