@@ -65,6 +65,8 @@ export default function ListeningExercise() {
   const [submitted, setSubmitted] = useState(false)
   const [correct, setCorrect] = useState(false)
   const [playing, setPlaying] = useState(false)
+  const [currentTime, setCurrentTime] = useState(0)
+  const [duration, setDuration] = useState(0)
   const [romajiMode, setRomajiMode] = useState(true)
 
   function toKanaRomaji(input: string): string {
@@ -266,6 +268,8 @@ export default function ListeningExercise() {
             onPlay={() => setPlaying(true)}
             onPause={() => setPlaying(false)}
             onEnded={() => setPlaying(false)}
+            onTimeUpdate={() => setCurrentTime(audioRef.current?.currentTime ?? 0)}
+            onLoadedMetadata={() => setDuration(audioRef.current?.duration ?? 0)}
           />
           <div className="flex flex-wrap items-center justify-center gap-2">
             <button
@@ -303,9 +307,25 @@ export default function ListeningExercise() {
               Replay
             </button>
           </div>
-          <p className="mt-2 text-sm text-slate-500">
-            Click to listen. You can replay as many times as you want.
-          </p>
+          <div className="mt-3">
+            <input
+              type="range"
+              min={0}
+              max={duration || 0}
+              step={0.1}
+              value={currentTime}
+              onChange={(e) => {
+                const t = Number(e.target.value)
+                if (audioRef.current) audioRef.current.currentTime = t
+                setCurrentTime(t)
+              }}
+              className="w-full"
+            />
+            <div className="flex justify-between text-xs text-slate-500">
+              <span>{currentTime.toFixed(1)}s</span>
+              <span>{duration.toFixed(1)}s</span>
+            </div>
+          </div>
         </div>
 
         <div className="flex justify-center gap-2">
