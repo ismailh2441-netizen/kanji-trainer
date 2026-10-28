@@ -100,7 +100,7 @@ export const listeningN5: ListeningLevelData[] = [
         level: 1,
         audioUrl: '/audio/n5/listening/l1/n5-l1-08.mp3',
         scriptJa: 'ここは わたしの へやです。つくえの 上に 本が 二さつ あります。',
-        scriptKana: 'ここは わたしの へやです。つくえの うえに ほんが ふたさつ あります。',
+        scriptKana: 'ここは わたしの へやです。つくえの うえに ほんが にさつ あります。',
         acceptableMeanings: [
           'This is my room. There are two books on the desk.',
         ],
