@@ -49,7 +49,7 @@ export default function LevelShell() {
         <span className="text-sm text-slate-500">{stats.total} kanji</span>
       </div>
 
-      <nav className="mb-6 flex gap-1 overflow-x-auto border-b border-slate-200">
+      <nav className="mb-6 flex flex-wrap gap-1 border-b border-slate-200">
         {tabs.map((tab) => (
           <NavLink
             key={tab.to}
