@@ -152,6 +152,8 @@ export default function ListeningExercise() {
     setInput('')
     setSubmitted(false)
     setCorrect(false)
+    setCurrentTime(0)
+    setDuration(0)
   }, [exerciseId])
 
   if (!level || level !== 'n5' || !lvl || !exercise) {
@@ -197,6 +199,8 @@ export default function ListeningExercise() {
     setInput('')
     setSubmitted(false)
     setCorrect(false)
+    setCurrentTime(0)
+    setDuration(0)
   }
 
   function handleInputChange(e: React.ChangeEvent<HTMLTextAreaElement>) {
@@ -215,6 +219,8 @@ export default function ListeningExercise() {
     setInput('')
     setSubmitted(false)
     setCorrect(false)
+    setCurrentTime(0)
+    setDuration(0)
   }
 
   function handleNext() {
@@ -270,6 +276,7 @@ export default function ListeningExercise() {
             onEnded={() => setPlaying(false)}
             onTimeUpdate={() => setCurrentTime(audioRef.current?.currentTime ?? 0)}
             onLoadedMetadata={() => setDuration(audioRef.current?.duration ?? 0)}
+            onCanPlay={() => setDuration(audioRef.current?.duration ?? 0)}
           />
           <div className="flex flex-wrap items-center justify-center gap-2">
             <button
