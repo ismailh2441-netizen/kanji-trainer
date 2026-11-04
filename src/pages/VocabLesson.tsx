@@ -113,6 +113,12 @@ export default function VocabLesson() {
 
       <div className="flex flex-col gap-3 sm:flex-row">
         <Link
+          to={`/${level}/vocab/${lesson.id}/quiz`}
+          className="flex-1 rounded-xl bg-indigo-600 px-5 py-3 text-center font-semibold text-white transition hover:bg-indigo-500"
+        >
+          Quiz this lesson
+        </Link>
+        <Link
           to={`/${level}/vocab/${lesson.id}/write`}
           className="flex-1 rounded-xl border border-indigo-300 bg-white px-5 py-3 text-center font-semibold text-indigo-700 transition hover:bg-indigo-50"
         >
