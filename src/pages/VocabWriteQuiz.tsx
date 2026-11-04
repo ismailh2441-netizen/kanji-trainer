@@ -46,6 +46,7 @@ export default function VocabWriteQuiz() {
     const threshold = Math.max(1, Math.floor(t.length * 0.25))
     return dist <= threshold
   }
+  const meanings = (english: string) => {
     const idx = english.indexOf(' — ')
     const parts = idx === -1 ? [english] : [english.slice(0, idx), english.slice(idx + 3)]
     const set: string[] = []
