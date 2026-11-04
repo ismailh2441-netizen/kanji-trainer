@@ -36,7 +36,10 @@ export default function VocabWriteQuiz() {
   const submit = () => {
     if (feedback !== null) return
     const accepted = meanings(current.english)
-    const ok = accepted.some((m) => m && input.toLowerCase().trim() === m)
+    const ok = accepted.some((m) => {
+      const a = input.toLowerCase().trim()
+      return m && (a === m || a.includes(m) || m.includes(a))
+    })
     if (ok) setScore((s) => s + 1)
     setFeedback(ok)
   }
