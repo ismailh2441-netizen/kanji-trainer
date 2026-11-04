@@ -162,4 +162,22 @@ export const n5VocabLessons: VocabLesson[] = [
       { word: 'お話をします', english: 'talk, tell a story — কথা বলা / গল্প বলা' },
     ],
   },
+  {
+    id: 22,
+    title: 'Lesson 22',
+    words: [
+      { word: 'きます', kanji: '着ます', english: 'wear (shirt, clothes, coat, etc.) — পরা (শার্ট, জামা, কোট ইত্যাদি)', group: 'I' },
+      { word: 'はきます', english: 'wear (shoes, pants, etc.) — পরা (জুতা, প্যান্ট ইত্যাদি)', group: 'I' },
+      { word: 'かぶります', english: 'wear (hat, etc.) — পরা (টুপি ইত্যাদি)', group: 'I' },
+      { word: 'かけます', english: 'wear (glasses) — পরা (চশমা)', group: 'II' },
+      { word: 'うまれます', kanji: '生まれます', english: 'be born — জন্মগ্রহণ করা', group: 'II' },
+      { word: 'コート', english: 'coat — কোট' },
+      { word: 'スーツ', english: 'suit — স্যুট' },
+      { word: 'セーター', english: 'sweater — সোয়েটার' },
+      { word: 'ぼうし', kanji: '帽子', english: 'hat, cap — টুপি, ক্যাপ' },
+      { word: 'めがね', kanji: '眼鏡', english: 'glasses — চশমা' },
+      { word: 'よく', english: 'often, well — প্রায়ই, ভালোভাবে' },
+      { word: 'おめでとうございます。', english: 'congratulations — অভিনন্দন।' },
+    ],
+  },
 ]
