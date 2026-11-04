@@ -122,6 +122,12 @@ export default function VocabWriteQuiz() {
         >
           {feedback === null ? 'Submit' : 'Next'}
         </button>
+        <button
+          onClick={() => setDone(true)}
+          className="mt-3 ml-2 rounded-xl border border-slate-300 bg-white px-4 py-2 text-sm font-semibold text-slate-700 hover:bg-slate-50"
+        >
+          End quiz
+        </button>
       </div>
     </div>
   )

@@ -235,7 +235,14 @@ function QuizRound({
           })}
         </div>
 
-        <div className="mt-4 flex justify-end">
+        <div className="mt-4 flex justify-between">
+          <button
+            type="button"
+            onClick={() => setDone(true)}
+            className="rounded-xl border border-slate-300 bg-white px-4 py-2.5 text-sm font-semibold text-slate-700 hover:bg-slate-50"
+          >
+            End quiz
+          </button>
           <button
             type="button"
             onClick={next}
