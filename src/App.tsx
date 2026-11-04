@@ -18,6 +18,7 @@ import Settings from './pages/Settings'
 import VocabLesson from './pages/VocabLesson'
 import VocabLessons from './pages/VocabLessons'
 import VocabQuiz from './pages/VocabQuiz'
+import VocabWriteQuiz from './pages/VocabWriteQuiz'
 import Write from './pages/Write'
 
 export default function App() {
@@ -41,6 +42,7 @@ export default function App() {
             <Route path="vocab" element={<VocabLessons />} />
             <Route path="vocab/:lessonId" element={<VocabLesson />} />
             <Route path="vocab/:lessonId/quiz" element={<VocabQuiz />} />
+            <Route path="vocab/:lessonId/write" element={<VocabWriteQuiz />} />
             <Route path="listening" element={<ListeningLevels />} />
             <Route path="listening/:listeningLevel" element={<ListeningExercises />} />
             <Route path="listening/:listeningLevel/:exerciseId" element={<ListeningExercise />} />
