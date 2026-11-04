@@ -107,7 +107,7 @@ export default function VocabWriteQuiz() {
           value={input}
           onChange={(e) => setInput(e.target.value)}
           onKeyDown={(e) => e.key === 'Enter' && (feedback === null ? submit() : next())}
-          disabled={feedback !== null}
+          readOnly={feedback !== null}
           className="mt-4 w-full rounded-xl border border-slate-300 px-3 py-2 text-sm"
           placeholder="Type meaning in English or Bangla"
         />
