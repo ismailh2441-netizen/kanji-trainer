@@ -145,7 +145,7 @@ export const n5VocabLessons: VocabLesson[] = [
       { word: 'たぶん', english: 'probably, maybe — সম্ভবত, হয়তো' },
       { word: 'きっと', english: 'surely, certainly — নিশ্চয়ই' },
       { word: 'ほんとうに', english: 'really, truly — সত্যিই' },
-      { word: 'そんなに', english: 'not that much — তেমন বেশি না' },
+      { word: 'そんなに', english: 'not that much (used with negatives) — তেমন বেশি না' },
       { word: '～について', english: 'about, regarding — সম্পর্কে, বিষয়ে' },
       { word: 'しかたがありません', english: 'there is no way, nothing can be done — উপায় নেই, কিছু করার নেই' },
       { word: 'しばらくですね', english: 'long time no see — অনেক দিন পর দেখা (অনেক দিন দেখা হয়নি)' },
