@@ -22,8 +22,15 @@ export default function VocabWriteQuiz() {
 
   const meanings = (english: string) => {
     const idx = english.indexOf(' — ')
-    if (idx === -1) return [english.toLowerCase().trim()]
-    return [english.slice(0, idx).toLowerCase().trim(), english.slice(idx + 3).toLowerCase().trim()]
+    const parts = idx === -1 ? [english] : [english.slice(0, idx), english.slice(idx + 3)]
+    const set: string[] = []
+    for (const p of parts) {
+      for (const seg of p.split(/[\/,]/)) {
+        const t = seg.trim().toLowerCase()
+        if (t) set.push(t)
+      }
+    }
+    return set
   }
 
   const submit = () => {
