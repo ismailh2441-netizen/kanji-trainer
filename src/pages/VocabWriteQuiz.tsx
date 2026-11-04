@@ -10,6 +10,7 @@ export default function VocabWriteQuiz() {
   const [input, setInput] = useState('')
   const [score, setScore] = useState(0)
   const [done, setDone] = useState(false)
+  const [feedback, setFeedback] = useState<null | boolean>(null)
 
   if (!level) return null
   const id = Number.parseInt(lessonId ?? '', 10)
@@ -26,14 +27,19 @@ export default function VocabWriteQuiz() {
   }
 
   const submit = () => {
+    if (feedback !== null) return
     const accepted = meanings(current.english)
-    if (accepted.some((m) => m && input.toLowerCase().trim() === m)) {
-      setScore((s) => s + 1)
-    }
+    const ok = accepted.some((m) => m && input.toLowerCase().trim() === m)
+    if (ok) setScore((s) => s + 1)
+    setFeedback(ok)
+  }
+
+  const next = () => {
     if (index + 1 >= words.length) setDone(true)
     else {
       setIndex((i) => i + 1)
       setInput('')
+      setFeedback(null)
     }
   }
 
@@ -67,15 +73,21 @@ export default function VocabWriteQuiz() {
         <input
           value={input}
           onChange={(e) => setInput(e.target.value)}
-          onKeyDown={(e) => e.key === 'Enter' && submit()}
+          onKeyDown={(e) => e.key === 'Enter' && (feedback === null ? submit() : next())}
+          disabled={feedback !== null}
           className="mt-4 w-full rounded-xl border border-slate-300 px-3 py-2 text-sm"
           placeholder="Type meaning in English or Bangla"
         />
+        {feedback !== null && (
+          <div className={`mt-2 text-sm font-semibold ${feedback ? 'text-green-600' : 'text-red-600'}`}>
+            {feedback ? 'Correct!' : `Wrong. Answer: ${current.english}`}
+          </div>
+        )}
         <button
-          onClick={submit}
+          onClick={feedback === null ? submit : next}
           className="mt-3 rounded-xl bg-indigo-600 px-4 py-2 text-sm font-semibold text-white hover:bg-indigo-500"
         >
-          Submit
+          {feedback === null ? 'Submit' : 'Next'}
         </button>
       </div>
     </div>
