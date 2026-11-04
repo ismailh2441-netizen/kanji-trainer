@@ -20,7 +20,32 @@ export default function VocabWriteQuiz() {
   const words = lesson.words
   const current = words[index]
 
-  const meanings = (english: string) => {
+  const levenshtein = (a: string, b: string) => {
+    if (a === b) return 0
+    if (!a.length) return b.length
+    if (!b.length) return a.length
+    let prev = Array.from({ length: b.length + 1 }, (_, i) => i)
+    for (let i = 1; i <= a.length; i++) {
+      let cur = [i]
+      for (let j = 1; j <= b.length; j++) {
+        const cost = a[i - 1] === b[j - 1] ? 0 : 1
+        cur[j] = Math.min(prev[j] + 1, cur[j - 1] + 1, prev[j - 1] + cost)
+      }
+      prev = cur
+    }
+    return prev[b.length]
+  }
+
+  const isMatch = (input: string, target: string) => {
+    if (!target) return false
+    const a = input.toLowerCase().trim()
+    const t = target.toLowerCase().trim()
+    if (!a) return false
+    if (a === t || a.includes(t) || t.includes(a)) return true
+    const dist = levenshtein(a, t)
+    const threshold = Math.max(1, Math.floor(t.length * 0.25))
+    return dist <= threshold
+  }
     const idx = english.indexOf(' — ')
     const parts = idx === -1 ? [english] : [english.slice(0, idx), english.slice(idx + 3)]
     const set: string[] = []
@@ -36,10 +61,7 @@ export default function VocabWriteQuiz() {
   const submit = () => {
     if (feedback !== null) return
     const accepted = meanings(current.english)
-    const ok = accepted.some((m) => {
-      const a = input.toLowerCase().trim()
-      return m && (a === m || a.includes(m) || m.includes(a))
-    })
+    const ok = accepted.some((m) => isMatch(input, m))
     if (ok) setScore((s) => s + 1)
     setFeedback(ok)
   }
