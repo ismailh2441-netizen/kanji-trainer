@@ -241,4 +241,21 @@ export const n5VocabLessons: VocabLesson[] = [
       { word: 'じぶんで', english: 'by oneself — নিজে নিজে / নিজের দ্বারা' },
     ],
   },
+  {
+    id: 25,
+    title: 'Lesson 25',
+    words: [
+      { word: 'かんがえます', kanji: '考えます', english: 'think, consider — চিন্তা করা / বিবেচনা করা', group: 'II' },
+      { word: 'つきます', kanji: '着きます', english: 'arrive [at the station] — পৌঁছানো (স্টেশনে)', group: 'I' },
+      { word: 'りゅうがくします', kanji: '留学します', english: 'study abroad — বিদেশে পড়াশোনা করা', group: 'III' },
+      { word: 'とります', kanji: '取ります', english: 'grow old — বয়স হওয়া / বয়স বাড়া', group: 'I' },
+      { word: 'いなか', kanji: '田舎', english: 'countryside, hometown — গ্রামাঞ্চল / নিজের গ্রাম' },
+      { word: 'たいしかん', kanji: '大使館', english: 'embassy — দূতাবাস' },
+      { word: 'グループ', english: 'group — দল / গোষ্ঠী' },
+      { word: 'チャンス', english: 'chance — সুযোগ' },
+      { word: 'おく', kanji: '億', english: 'hundred million — দশ কোটি' },
+      { word: 'もし', english: 'if — যদি' },
+      { word: 'いくら', english: 'however, even if — যতই হোক / এমনকি যদি' },
+    ],
+  },
 ]
