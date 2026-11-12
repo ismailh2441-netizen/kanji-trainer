@@ -1,4 +1,5 @@
-import type { KanjiEntry, Level } from '../types'
+import { getProgress } from './storage'
+import type { CustomSection, KanjiEntry, Level } from '../types'
 
 /**
  * Target kanji per section. Smaller levels use session-sized batches so one
@@ -16,15 +17,55 @@ const TARGET_SIZE: Record<Level, number> = {
 export interface Section {
   /** 1-based section number. */
   id: number
+  /** Optional user-defined name (custom sections only). */
+  name?: string
   kanji: string[]
+}
+
+/**
+ * Read the user-defined custom sections for a level, or null when not set.
+ */
+export function getCustomSections(level: Level): CustomSection[] | null {
+  return getProgress().levels[level].sections ?? null
+}
+
+/**
+ * Split a deck into sections of `size` kanji each, in deck order. The final
+ * section holds the remainder, so it may be smaller. Returns null for an
+ * invalid size so the caller can keep the current layout.
+ */
+export function splitBySize(deck: KanjiEntry[], size: number): Section[] | null {
+  if (!Number.isInteger(size) || size <= 0) return null
+  if (deck.length === 0) return []
+
+  const sections: Section[] = []
+  for (let pos = 0; pos < deck.length; pos += size) {
+    sections.push({
+      id: sections.length + 1,
+      kanji: deck.slice(pos, pos + size).map((e) => e.kanji),
+    })
+  }
+  return sections
 }
 
 /**
  * Split a level's deck into balanced sections, in deck order (the order new
  * cards are introduced by Review). Sizes are balanced so no tiny leftover
  * group appears at the end — e.g. N5's 79 kanji → 20 · 20 · 20 · 19.
+ *
+ * When custom sections are defined for the level, those are used instead.
  */
 export function levelSections(level: Level, deck: KanjiEntry[]): Section[] {
+  const custom = getCustomSections(level)
+  if (custom && custom.length > 0) {
+    // Validate that all deck kanji are covered; fall back to default otherwise.
+    const covered = new Set(custom.flatMap((s) => s.kanji))
+    const allCovered = deck.every((e) => covered.has(e.kanji))
+    if (allCovered) {
+      return custom.map((s) => ({ id: s.id, name: s.name, kanji: [...s.kanji] }))
+    }
+  }
+
   const total = deck.length
   if (total === 0) return []
   const count = Math.max(1, Math.ceil(total / TARGET_SIZE[level]))

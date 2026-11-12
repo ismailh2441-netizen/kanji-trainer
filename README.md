@@ -86,12 +86,14 @@ No service-role key is needed by the web app. It only uses the publishable key, 
 
 - JLPT kanji decks and example sentences are generated from [kanjitest.online](https://www.kanjitest.online/) by `scripts/fetch-data.mjs` and `scripts/fetch-examples.mjs`.
 - Stroke-order data comes from [KanjiVG](https://kanjivg.tagaini.net/), licensed under [CC BY-SA 3.0](https://creativecommons.org/licenses/by-sa/3.0/).
+- Kana stroke-order data for the N5 kana charts is fetched separately by `scripts/fetch-kana-strokes.mjs`.
 - The generated deck files live in `src/data/`, and stroke JSON lives in `public/strokes/`.
 
 To refresh the datasets:
 
 ```bash
 npm run fetch-data
+npm run fetch-kana-strokes
 ```
 
 ## Deployment

@@ -1,17 +1,28 @@
-import { Link, NavLink, Navigate, Outlet, useLocation } from 'react-router-dom'
+import { Link, NavLink, Outlet, useLocation } from 'react-router-dom'
 import { useLevel } from '../hooks/useLevel'
 import { LEVEL_LABEL, LEVEL_NAME, levelStats } from '../lib/levels'
 import { parseSection } from '../lib/sections'
 import { levelTotals } from '../data/meta'
 import { hasVocab } from '../data/vocab'
 import { useProgress } from '../lib/storage'
+import NotFound from '../pages/NotFound'
 
-const TABS = [
+interface Tab {
+  to: string
+  label: string
+  end?: boolean
+  badge?: 'due'
+  /** Only show this tab for the beginner level. */
+  n5Only?: boolean
+}
+
+const TABS: Tab[] = [
   { to: '', label: 'Dashboard', end: true },
+  { to: 'kana', label: 'Kana', n5Only: true },
   { to: 'sections', label: 'Sections' },
   { to: 'vocab', label: 'Vocabulary' },
   { to: 'listening', label: 'Listening' },
-  { to: 'review', label: 'Review', badge: 'due' as const },
+  { to: 'review', label: 'Review', badge: 'due' },
   { to: 'quiz', label: 'Quiz' },
   { to: 'write', label: 'Write' },
   { to: 'browse', label: 'Browse' },
@@ -22,10 +33,15 @@ export default function LevelShell() {
   const level = useLevel()
   const location = useLocation()
 
-  if (!level) return <Navigate to="/" replace />
+  // An unknown single-segment path (for example `/kana` instead of
+  // `/n5/kana`) also matches this route. Show a clear 404 rather than quietly
+  // sending the learner back to the home page.
+  if (!level) return <NotFound />
 
   const stats = levelStats(progress, level, levelTotals[level])
-  const tabs = TABS.filter((tab) => tab.to !== 'vocab' || hasVocab(level))
+  const tabs = TABS.filter(
+    (tab) => (!tab.n5Only || level === 'n5') && (tab.to !== 'vocab' || hasVocab(level)),
+  )
 
   // Keep the active section (`?section=N`) attached to every tab while one is
   // selected. On a section detail page, the path itself carries the section.

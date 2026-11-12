@@ -52,10 +52,12 @@ export default function SectionDetail() {
           <Link to={`/${level}/sections`} className="hover:text-slate-800">
             Sections
           </Link>{' '}
-          / Section {section.id}
+          / {section.name ?? `Section ${section.id}`}
         </div>
         <div className="mt-1 flex flex-wrap items-baseline gap-x-3 gap-y-1">
-          <h1 className="text-2xl font-bold text-slate-900">Section {section.id}</h1>
+          <h1 className="text-2xl font-bold text-slate-900">
+            {section.name ?? `Section ${section.id}`}
+          </h1>
           <span className="text-sm text-slate-500">{section.kanji.length} kanji</span>
         </div>
       </div>

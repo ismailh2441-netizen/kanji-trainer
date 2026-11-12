@@ -54,11 +54,19 @@ export interface Card {
 /** 1 = Again, 2 = Hard, 3 = Good, 4 = Easy */
 export type Grade = 1 | 2 | 3 | 4
 
+export interface CustomSection {
+  id: number
+  name: string
+  kanji: string[]
+}
+
 export interface LevelProgress {
   cards: Record<string, Card>
   newToday: { date: string; count: number }
   /** Time (ms) of the last level reset, used to discard stale cards on merge. */
   resetAt?: number
+  /** User-defined custom sections for this level, null when not configured. */
+  sections: CustomSection[] | null
 }
 
 export interface Progress {

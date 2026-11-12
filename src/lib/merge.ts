@@ -70,6 +70,7 @@ export function mergeProgress(localInput: Progress, remoteInput: Progress): Prog
           cards,
           newToday: mergeNewToday(localLevel, remoteLevel),
           resetAt,
+          sections: preferLocal ? localLevel.sections : remoteLevel.sections,
         },
       ]
     }),

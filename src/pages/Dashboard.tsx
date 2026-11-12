@@ -6,7 +6,19 @@ import { LEVEL_THEME, levelStats } from '../lib/levels'
 import { levelTotals } from '../data/meta'
 import { useProgress } from '../lib/storage'
 
-const ACTIONS: { to: (l: string) => string; title: string; blurb: string; span?: string }[] = [
+const ACTIONS: {
+  to: (l: string) => string
+  title: string
+  blurb: string
+  span?: string
+  n5Only?: boolean
+}[] = [
+  {
+    to: (l: string) => `/${l}/kana`,
+    title: 'Hiragana & katakana',
+    blurb: 'Learn the kana charts, practise stroke order, then test yourself with a quick quiz.',
+    n5Only: true,
+  },
   {
     to: (l: string) => `/${l}/review`,
     title: 'Review flashcards',
@@ -50,6 +62,7 @@ export default function Dashboard() {
   const theme = LEVEL_THEME[level]
   const stats = levelStats(progress, level, levelTotals[level])
   const newUsed = Math.max(0, progress.settings.newPerDay - stats.newAvailable)
+  const actions = ACTIONS.filter((action) => !action.n5Only || level === 'n5')
 
   return (
     <div className="space-y-6">
@@ -119,7 +132,7 @@ export default function Dashboard() {
       </div>
 
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-        {ACTIONS.map((action) => (
+        {actions.map((action) => (
           <Link
             key={action.title}
             to={action.to(level) + search}

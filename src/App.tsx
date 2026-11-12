@@ -1,4 +1,4 @@
-import { Navigate, Route, Routes } from 'react-router-dom'
+import { Route, Routes } from 'react-router-dom'
 import Layout from './components/Layout'
 import LevelShell from './components/LevelShell'
 import RequireAuth from './components/RequireAuth'
@@ -6,10 +6,12 @@ import AuthCallback from './pages/AuthCallback'
 import Browse from './pages/Browse'
 import Dashboard from './pages/Dashboard'
 import Home from './pages/Home'
+import Kana from './pages/Kana'
 import ListeningExercise from './pages/ListeningExercise'
 import ListeningExercises from './pages/ListeningExercises'
 import ListeningLevels from './pages/ListeningLevels'
 import Login from './pages/Login'
+import NotFound from './pages/NotFound'
 import Quiz from './pages/Quiz'
 import Review from './pages/Review'
 import SectionDetail from './pages/SectionDetail'
@@ -37,6 +39,7 @@ export default function App() {
             <Route path="quiz" element={<Quiz />} />
             <Route path="write" element={<Write />} />
             <Route path="browse" element={<Browse />} />
+            <Route path="kana" element={<Kana />} />
             <Route path="sections" element={<Sections />} />
             <Route path="sections/:sectionId" element={<SectionDetail />} />
             <Route path="vocab" element={<VocabLessons />} />
@@ -50,7 +53,7 @@ export default function App() {
         </Route>
       </Route>
 
-      <Route path="*" element={<Navigate to="/" replace />} />
+      <Route path="*" element={<NotFound />} />
     </Routes>
   )
 }

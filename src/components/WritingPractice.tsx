@@ -463,7 +463,7 @@ export default function WritingPractice({
   const progress = total > 0 ? Math.round((completedCount / total) * 100) : 0
 
   const status = done ? (
-    <span className="inline-block font-semibold text-emerald-600 animate-pop-in">Kanji complete 🎉</span>
+    <span className="inline-block font-semibold text-emerald-600 animate-pop-in">Character complete 🎉</span>
   ) : feedback === 'good' ? (
     <span className="inline-block font-semibold text-emerald-600 animate-pop-in">
       {mode === 'guided' ? 'Nice!' : 'Nice match!'}

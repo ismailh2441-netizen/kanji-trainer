@@ -1,12 +1,12 @@
 import { useSyncExternalStore } from 'react'
-import { type Card, type Grade, type Level, type LevelProgress, type Progress } from '../types'
+import { type Card, type CustomSection, type Grade, type Level, type LevelProgress, type Progress } from '../types'
 import { dateStr, gradeCard } from './srs'
 
 const LEVELS = ['n5', 'n4', 'n3', 'n2', 'n1'] as Level[]
 const KEY = 'kanji-trainer-progress-v1'
 
 function emptyLevel(): LevelProgress {
-  return { cards: {}, newToday: { date: '', count: 0 }, resetAt: 0 }
+  return { cards: {}, newToday: { date: '', count: 0 }, resetAt: 0, sections: null }
 }
 
 export function defaultProgress(): Progress {
@@ -66,6 +66,16 @@ export function normalizeProgress(input: unknown): Progress {
           cards,
           newToday,
           resetAt: typeof lp?.resetAt === 'number' ? lp.resetAt : 0,
+          sections: typeof lp?.sections === 'object' && Array.isArray(lp.sections)
+            ? lp.sections.map((s: unknown) => {
+                const sec = s as Partial<CustomSection>
+                return {
+                  id: Number.isFinite(Number(sec.id)) ? Number(sec.id) : 0,
+                  name: typeof sec.name === 'string' && sec.name.length > 0 ? sec.name : 'Section',
+                  kanji: Array.isArray(sec.kanji) ? sec.kanji.filter((k) => typeof k === 'string') : [],
+                }
+              })
+            : null,
         },
       ]
     }),
@@ -184,7 +194,7 @@ export function recordStudy(level: Level, kanji: string, grade: Grade, now = Dat
     ...progress,
     levels: {
       ...progress.levels,
-      [level]: { cards, newToday, resetAt: lp.resetAt ?? 0 },
+      [level]: { cards, newToday, resetAt: lp.resetAt ?? 0, sections: lp.sections ?? null },
     },
     streak: touchStreak(progress.streak, now),
   })
@@ -210,6 +220,26 @@ export function resetAll() {
     LEVELS.map((level) => [level, { ...emptyLevel(), resetAt: now }]),
   ) as Progress['levels']
   commit({ ...defaultProgress(), levels, updatedAt: now })
+}
+
+export function setCustomSections(level: Level, sections: CustomSection[] | null) {
+  commit({
+    ...progress,
+    levels: {
+      ...progress.levels,
+      [level]: { ...progress.levels[level], sections },
+    },
+  })
+}
+
+export function resetCustomSections(level: Level) {
+  commit({
+    ...progress,
+    levels: {
+      ...progress.levels,
+      [level]: { ...progress.levels[level], sections: null },
+    },
+  })
 }
 
 export function exportProgress(): string {

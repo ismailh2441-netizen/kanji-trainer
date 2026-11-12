@@ -8,6 +8,7 @@
     "build": "tsc -b && vite build",
     "lint": "oxlint",
     "fetch-data": "node scripts/fetch-data.mjs",
+    "fetch-kana-strokes": "node scripts/fetch-kana-strokes.mjs",
     "preview": "vite preview"
   },
   "dependencies": {
